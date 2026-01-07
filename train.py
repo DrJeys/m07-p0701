@@ -6,6 +6,7 @@ from src.dataset import HMDB51Dataset, collate_fn
 from src.model import LSViTForAction
 from src.utils import set_seed, load_vit_checkpoint, ensure_dir
 from src.engine import train_one_epoch, evaluate
+from pathlib import Path
 
 def main():
     # Config
@@ -24,13 +25,17 @@ def main():
     # Lưu ý: Trên Mac, num_workers quá cao có thể gây lỗi 'Too many open files'
     # Nếu gặp lỗi, hãy set num_workers=0 trong TrainingConfig
     print("Initializing datasets...")
+    PROJECT_ROOT = Path(__file__).resolve().parent
+    DATA_ROOT = PROJECT_ROOT / "hmdb51_data"
+    
     train_ds = HMDB51Dataset(
-        root=t_cfg.data_root, split='train', 
+        root=str(DATA_ROOT), split="train",
         num_frames=t_cfg.num_frames, frame_stride=t_cfg.frame_stride,
         val_ratio=t_cfg.val_ratio, seed=t_cfg.seed
     )
+    
     val_ds = HMDB51Dataset(
-        root=t_cfg.data_root, split='val', 
+        root=str(DATA_ROOT), split="val",
         num_frames=t_cfg.num_frames, frame_stride=t_cfg.frame_stride,
         val_ratio=t_cfg.val_ratio, seed=t_cfg.seed
     )
